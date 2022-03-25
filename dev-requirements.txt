@@ -1,0 +1,7 @@
+black
+flake8
+nox
+pylint
+pytest
+pytest-cov
+twine
