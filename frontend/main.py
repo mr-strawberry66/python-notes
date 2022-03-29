@@ -1,7 +1,5 @@
-from textwrap import indent
 import time
 from datetime import datetime
-from turtle import width
 
 import dearpygui.dearpygui as dpg
 
