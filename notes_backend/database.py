@@ -61,7 +61,9 @@ class Database:
                 SELECT_NOTE_BY_ID,
                 (_id,),
             )
-            return Note.from_tuple(cursor.fetchone())
+            raw = cursor.fetchone()
+            if raw:
+                return Note.from_tuple(raw)
 
     def get_highest_id(self) -> int:
         """Return the highest id."""

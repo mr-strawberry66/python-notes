@@ -16,9 +16,9 @@ class Note:  # pylint: disable=R0902
     tags: list[str]
     due_date: str
     reminder_date: str
-    completed: int
-    archived: int
-    deleted: int
+    completed: bool
+    archived: bool
+    deleted: bool
 
     def delete(self) -> None:
         """Delete the note."""
@@ -31,6 +31,12 @@ class Note:  # pylint: disable=R0902
     def complete(self) -> None:
         """Mark the note as completed."""
         self.completed = True
+
+    def update(self, **kwargs) -> Note:
+        """Update the note."""
+        for key in self.__dict__.keys():
+            if kwargs.get(key, None) is not None:
+                setattr(self, key, kwargs[key])
 
     def _join_tags(self) -> str:
         """Join the tags with a comma."""
@@ -70,7 +76,7 @@ class Note:  # pylint: disable=R0902
             tags=note[5].split(", "),
             due_date=note[6],
             reminder_date=note[7],
-            completed=note[8],
-            archived=note[9],
-            deleted=note[10],
+            completed=bool(note[8]),
+            archived=bool(note[9]),
+            deleted=bool(note[10]),
         )

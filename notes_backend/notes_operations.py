@@ -8,7 +8,7 @@ from .note import Note
 class Notes:
     """Class to operate on notes."""
 
-    def __init__(self, database_file_name: str = None) -> None:
+    def __init__(self, database_file_name: str = "notes.db") -> None:
         self.database = Database(database_file_name)
 
     def list_notes(self) -> list[Note]:
@@ -21,6 +21,7 @@ class Notes:
 
     def new_note(self, **kwargs: dict[str, any]) -> None:
         """Create a new note."""
+        kwargs["id_"] = self.database.get_highest_id() + 1
         note = Note(**kwargs)
         self.database.store_note(note)
 
