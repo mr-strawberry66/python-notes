@@ -51,7 +51,6 @@ def date_callback(sender, app_data, user_data):
         year = app_data["year"] + 1900
     date_str = f'{app_data["month_day"]}/{app_data["month"] + 1}/{year}'
     date = datetime.strptime(date_str, "%d/%m/%Y").strftime("%Y-%m-%d")
-    print(date)
     note_dict[user_data] = date
 
 
@@ -62,27 +61,24 @@ dpg.setup_dearpygui()
 
 def main_window():
     with dpg.window(tag="Main Window", label="Home", width=600, height=1000):
-        dpg.add_menu_bar(label="Main Menu")
-        file_nav = dpg.add_menu(label="File")
+        main_menu = dpg.add_menu_bar(label="Main Menu")
+        file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(label="New Note", callback=new_note_window, parent=file_nav)
-
-        notes_nerd_tree_items = [
-            f"{datetime.fromtimestamp(note.created_at).strftime('%Y-%m-%d')}: {note.title}"
-            for note in NOTES.list_notes()
-        ]
-
-        print(notes_nerd_tree_items)
+        dpg.add_menu_item(label="Exit", parent=file_nav)
 
         dpg.add_listbox(
-            items=notes_nerd_tree_items,
+            items=[
+                f"{datetime.fromtimestamp(note.created_at).strftime('%Y-%m-%d')}: {note.title}"
+                for note in NOTES.list_notes()
+            ],
             label="Notes",
         )
 
 
 def new_note_window():
     with dpg.window(label="New Note", width=600, height=1000):
-        dpg.add_menu_bar(label="Main Menu")
-        file_nav = dpg.add_menu(label="File")
+        main_menu = dpg.add_menu_bar(label="Main Menu")
+        file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(label="Save", callback=save_note, parent=file_nav)
 
         dpg.add_input_text(
