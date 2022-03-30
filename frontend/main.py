@@ -30,6 +30,13 @@ def save_note(sender, app_data, user_data):
         NOTES.database.store_note(note)
     else:
         NOTES.update_note(note.id_, **note_dict)
+    main_window()
+    dpg.hide_item(user_data)
+
+
+def cancel_new_note(sender, app_data, user_data):
+    main_window()
+    dpg.delete_item(user_data)
 
 
 def regular_text_callback(sender, app_data, user_data):
@@ -60,26 +67,42 @@ dpg.setup_dearpygui()
 
 
 def main_window():
-    with dpg.window(tag="Main Window", label="Home", width=600, height=1000):
+    with dpg.window(tag="Main Window", label="Home", width=600, height=1000) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(label="New Note", callback=new_note_window, parent=file_nav)
-        dpg.add_menu_item(label="Exit", parent=file_nav)
+        dpg.add_menu_item(label="Exit", parent=file_nav, callback=dpg.stop_dearpygui)
 
         dpg.add_listbox(
-            items=[
-                f"{datetime.fromtimestamp(note.created_at).strftime('%Y-%m-%d')}: {note.title}"
-                for note in NOTES.list_notes()
-            ],
+            items=sorted(
+                [
+                    f"{datetime.fromtimestamp(note.created_at).strftime('%Y-%m-%d')}: {note.title}"
+                    for note in NOTES.list_notes()
+                ],
+                reverse=True,
+            ),
             label="Notes",
+            width=420,
         )
 
 
 def new_note_window():
-    with dpg.window(label="New Note", width=600, height=1000):
+    dpg.delete_item("Main Window")
+    with dpg.window(label="New Note", width=600, height=1000) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
-        dpg.add_menu_item(label="Save", callback=save_note, parent=file_nav)
+        dpg.add_menu_item(
+            label="Save",
+            callback=save_note,
+            parent=file_nav,
+            user_data=window,
+        )
+        dpg.add_menu_item(
+            label="Cancel",
+            callback=cancel_new_note,
+            parent=file_nav,
+            user_data=window,
+        )
 
         dpg.add_input_text(
             label="Title",
