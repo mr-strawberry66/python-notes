@@ -89,8 +89,11 @@ class Database:
 
     def delete_note(self, note: Note) -> None:
         """Delete a note."""
-        with SQLite(self.file_name) as cursor:
-            cursor.execute(
-                DELETE_NOTE,
-                (note.id_,),
-            )
+        if note:
+            with SQLite(self.file_name) as cursor:
+                cursor.execute(
+                    DELETE_NOTE,
+                    (note.id_,),
+                )
+        else:
+            print("Note not found")

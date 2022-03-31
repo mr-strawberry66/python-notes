@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import astuple, dataclass
+from datetime import datetime
 
 
 @dataclass
@@ -19,6 +20,20 @@ class Note:  # pylint: disable=R0902
     completed: bool
     archived: bool
     deleted: bool
+
+    def __repr__(self) -> str:
+        """String representation of the note."""
+        if self.id_ < 10:
+            spacing = "   "
+        elif self.id_ >= 10 and self.id_ < 999:
+            spacing = "  "
+        else:
+            spacing = " "
+        return f"{self.id_}:{spacing}{datetime.fromtimestamp(self.created_at).strftime('%Y-%m-%d')}: {self.title}"
+
+    def __lt__(self, other):
+        """Compare the note to another note."""
+        return self.created_at < other.created_at
 
     def delete(self) -> None:
         """Delete the note."""
