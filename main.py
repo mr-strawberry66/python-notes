@@ -337,9 +337,10 @@ main_window()
 dpg.show_viewport()
 
 while dpg.is_dearpygui_running():
-    WIDTH = dpg.get_viewport_width() - 20
-    HEIGHT = dpg.get_viewport_height() - 55
-    WIDGET_WIDTH = WIDTH // 1.1
+    WIDTH = dpg.get_viewport_width()
+    HEIGHT = dpg.get_viewport_height()
+    WIDGET_WIDTH = WIDTH // 1.5
     dpg.render_dearpygui_frame()
 
 dpg.destroy_context()
+
