@@ -1,4 +1,3 @@
-import os
 import time
 from datetime import datetime
 
@@ -22,6 +21,17 @@ note_dict = {}
 dpg.create_context()
 vp = dpg.create_viewport(title="Notes", width=WIDTH, height=HEIGHT)
 dpg.setup_dearpygui()
+
+WIDGET_WIDTH = dpg.get_viewport_width() // 1.5
+
+
+
+def current_date():
+    """Return the current date formatted for DearPyGui."""
+    today = datetime.now()
+    year = today.year - 2000 + 100
+    return {"month_day": today.day, "month": today.month - 1, "year": year,}
+
 
 def reset_note_dict():
     note_dict.clear()
@@ -97,6 +107,11 @@ def edit_note(sender, app_data, user_data):
     note = NOTES.list_note(note_id)
 
     note_dict["id_"] = note.id_
+    note_dict["title"] = note.title
+    note_dict["content"] = note.content
+    note_dict["category"] = note.category
+    note_dict["tags"] = note.tags
+    note_dict["due_date"] = note.due_date
 
     with dpg.window(
         label=f"Edit {note.title}",
@@ -123,7 +138,7 @@ def edit_note(sender, app_data, user_data):
 
         dpg.add_input_text(
             label="Title",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=regular_text_callback,
             user_data="title",
@@ -133,7 +148,7 @@ def edit_note(sender, app_data, user_data):
 
         dpg.add_input_text(
             label="Content",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=True,
             callback=regular_text_callback,
             user_data="content",
@@ -143,7 +158,7 @@ def edit_note(sender, app_data, user_data):
 
         dpg.add_input_text(
             label="Category",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=regular_text_callback,
             user_data="category",
@@ -153,7 +168,7 @@ def edit_note(sender, app_data, user_data):
 
         dpg.add_input_text(
             label="Tags",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=tags_callback,
             user_data="tags",
@@ -165,27 +180,27 @@ def edit_note(sender, app_data, user_data):
             label="Due Date",
             user_data="due_date",
             callback=date_callback,
-            default_value={"month_day": 29, "month": 3, "year": 22},
+            default_value=current_date(),
             indent=INDENT_SIZE,
         )
         dpg.add_button(
             label="Save",
             callback=save_note,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
             user_data=window,
         )
         dpg.add_button(
             label="Delete Note",
             callback=delete_note,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
             user_data=(note.id_, window),
         )
         dpg.add_button(
             label="Cancel",
             callback=cancel_new_note,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
             user_data=window,
         )
@@ -198,6 +213,7 @@ def main_window():
         height=HEIGHT,
         on_close=dpg.stop_dearpygui,
     ) as window:
+
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(label="New Note", callback=new_note_window, parent=file_nav)
@@ -209,7 +225,7 @@ def main_window():
                 reverse=True,
             ),
             label="Notes",
-            width=420,
+            width=WIDGET_WIDTH,
             callback=edit_note,
             indent=INDENT_SIZE,
         )
@@ -217,13 +233,13 @@ def main_window():
         dpg.add_button(
             label="New Note",
             callback=new_note_window,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
         )
         dpg.add_button(
             label="Exit",
             callback=dpg.stop_dearpygui,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
         )
 
@@ -254,7 +270,7 @@ def new_note_window():
 
         dpg.add_input_text(
             label="Title",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=regular_text_callback,
             user_data="title",
@@ -263,7 +279,7 @@ def new_note_window():
 
         dpg.add_input_text(
             label="Content",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=True,
             callback=regular_text_callback,
             user_data="content",
@@ -272,7 +288,7 @@ def new_note_window():
 
         dpg.add_input_text(
             label="Category",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=regular_text_callback,
             user_data="category",
@@ -281,7 +297,7 @@ def new_note_window():
 
         dpg.add_input_text(
             label="Tags",
-            width=420,
+            width=WIDGET_WIDTH,
             multiline=False,
             callback=tags_callback,
             user_data="tags",
@@ -292,21 +308,21 @@ def new_note_window():
             label="Due Date",
             user_data="due_date",
             callback=date_callback,
-            default_value={"month_day": 29, "month": 3, "year": 22},
+            default_value=current_date(),
             indent=INDENT_SIZE,
         )
 
         dpg.add_button(
             label="Save",
             callback=save_note,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
             user_data=window,
         )
         dpg.add_button(
             label="Cancel",
             callback=cancel_new_note,
-            width=420,
+            width=WIDGET_WIDTH,
             indent=INDENT_SIZE,
             user_data=window,
         )
@@ -315,5 +331,11 @@ def new_note_window():
 main_window()
 
 dpg.show_viewport()
-dpg.start_dearpygui()
+
+while dpg.is_dearpygui_running():
+    WIDTH = dpg.get_viewport_width() - 20
+    HEIGHT = dpg.get_viewport_height() - 55
+    WIDGET_WIDTH = WIDTH // 1.1
+    dpg.render_dearpygui_frame()
+
 dpg.destroy_context()
