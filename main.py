@@ -11,11 +11,17 @@ from screeninfo import get_monitors
 
 screen = get_monitors()[0]
 
+WIDTH = screen.width // 2
+HEIGHT = screen.height // 2
+
 INDENT_SIZE = 15
 NOTES = Notes()
 
 note_dict = {}
 
+dpg.create_context()
+vp = dpg.create_viewport(title="Notes", width=WIDTH, height=HEIGHT)
+dpg.setup_dearpygui()
 
 def reset_note_dict():
     note_dict.clear()
@@ -94,8 +100,8 @@ def edit_note(sender, app_data, user_data):
 
     with dpg.window(
         label=f"Edit {note.title}",
-        width=600,
-        height=1000,
+        width=WIDTH,
+        height=HEIGHT,
         pos=[0, 0],
         on_close=cancel_new_note,
         user_data="Main Menu",
@@ -184,18 +190,12 @@ def edit_note(sender, app_data, user_data):
             user_data=window,
         )
 
-
-dpg.create_context()
-dpg.create_viewport(title="Notes", width=2140, height=2140)
-dpg.setup_dearpygui()
-
-
 def main_window():
     with dpg.window(
         tag="Main Window",
         label="Home",
-        width=(screen.width),
-        height=(screen.height),
+        width=WIDTH,
+        height=HEIGHT,
         on_close=dpg.stop_dearpygui,
     ) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
@@ -232,8 +232,8 @@ def new_note_window():
     dpg.delete_item("Main Window")
     with dpg.window(
         label="New Note",
-        width=600,
-        height=1000,
+        width=WIDTH,
+        height=HEIGHT,
         on_close=cancel_new_note,
         user_data="Main Menu",
     ) as window:
