@@ -25,12 +25,15 @@ dpg.setup_dearpygui()
 WIDGET_WIDTH = dpg.get_viewport_width() // 1.5
 
 
-
 def current_date():
     """Return the current date formatted for DearPyGui."""
     today = datetime.now()
     year = today.year - 2000 + 100
-    return {"month_day": today.day, "month": today.month - 1, "year": year,}
+    return {
+        "month_day": today.day,
+        "month": today.month - 1,
+        "year": year,
+    }
 
 
 def reset_note_dict():
@@ -204,6 +207,7 @@ def edit_note(sender, app_data, user_data):
             indent=INDENT_SIZE,
             user_data=window,
         )
+
 
 def main_window():
     with dpg.window(
