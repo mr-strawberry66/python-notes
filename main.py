@@ -1,9 +1,15 @@
+import os
 import time
 from datetime import datetime
 
 import dearpygui.dearpygui as dpg
 
 from notes_backend import Notes, Note
+
+from screeninfo import get_monitors
+
+
+screen = get_monitors()[0]
 
 INDENT_SIZE = 15
 NOTES = Notes()
@@ -86,7 +92,14 @@ def edit_note(sender, app_data, user_data):
 
     note_dict["id_"] = note.id_
 
-    with dpg.window(label=f"Edit {note.title}", width=600, height=1000) as window:
+    with dpg.window(
+        label=f"Edit {note.title}",
+        width=600,
+        height=1000,
+        pos=[0, 0],
+        on_close=cancel_new_note,
+        user_data="Main Menu",
+    ) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(
@@ -178,7 +191,13 @@ dpg.setup_dearpygui()
 
 
 def main_window():
-    with dpg.window(tag="Main Window", label="Home", width=600, height=1000) as window:
+    with dpg.window(
+        tag="Main Window",
+        label="Home",
+        width=(screen.width),
+        height=(screen.height),
+        on_close=dpg.stop_dearpygui,
+    ) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(label="New Note", callback=new_note_window, parent=file_nav)
@@ -211,7 +230,13 @@ def main_window():
 
 def new_note_window():
     dpg.delete_item("Main Window")
-    with dpg.window(label="New Note", width=600, height=1000) as window:
+    with dpg.window(
+        label="New Note",
+        width=600,
+        height=1000,
+        on_close=cancel_new_note,
+        user_data="Main Menu",
+    ) as window:
         main_menu = dpg.add_menu_bar(label="Main Menu")
         file_nav = dpg.add_menu(label="File", parent=main_menu)
         dpg.add_menu_item(
