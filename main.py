@@ -345,6 +345,14 @@ while dpg.is_dearpygui_running():
         if dpg.does_item_exist(window):
             dpg.set_item_width(window, WIDTH)
             dpg.set_item_height(window, HEIGHT)
+            widgets = dpg.get_item_children(window)
+            for key, val in widgets.items():
+                if widgets.get(key, None):
+                    for widget in widgets[key]:
+                        if dpg.does_item_exist(widget):
+                            if "width" in dpg.get_item_configuration(widget).keys():
+                                if dpg.get_item_configuration(widget)["width"] > 0:
+                                    dpg.set_item_width(widget, WIDGET_WIDTH)
     dpg.render_dearpygui_frame()
 
 dpg.destroy_context()
