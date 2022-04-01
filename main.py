@@ -339,7 +339,7 @@ dpg.show_viewport()
 while dpg.is_dearpygui_running():
     WIDTH = dpg.get_viewport_width()
     HEIGHT = dpg.get_viewport_height()
-    WIDGET_WIDTH = WIDTH // 1.1
+    WIDGET_WIDTH = WIDTH // 1.5
     window = dpg.get_active_window()
     if window:
         if dpg.does_item_exist(window):
