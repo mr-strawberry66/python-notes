@@ -343,8 +343,9 @@ while dpg.is_dearpygui_running():
     window = dpg.get_active_window()
     if window:
         if dpg.does_item_exist(window):
-            dpg.set_item_width(window, WIDTH)
-            dpg.set_item_height(window, HEIGHT)
+            if hasattr(window, "width") and hasattr(window, "height"):
+                dpg.set_item_width(window, WIDTH)
+                dpg.set_item_height(window, HEIGHT)
     dpg.render_dearpygui_frame()
 
 dpg.destroy_context()

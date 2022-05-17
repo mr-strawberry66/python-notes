@@ -29,7 +29,8 @@ class Note:  # pylint: disable=R0902
             spacing = "  "
         else:
             spacing = " "
-        return f"{self.id_}:{spacing}{datetime.fromtimestamp(self.created_at).strftime('%Y-%m-%d')}: {self.title}"
+        time = datetime.fromtimestamp(self.created_at).strftime("%Y-%m-%d")
+        return f"{self.id_}:{spacing}{time}: {self.title}"
 
     def __lt__(self, other):
         """Compare the note to another note."""
@@ -79,10 +80,10 @@ class Note:  # pylint: disable=R0902
             self.id_,
         )
 
-    @staticmethod
-    def from_tuple(note) -> Note:
+    @classmethod
+    def from_tuple(cls, note) -> Note:
         """Return a note from a tuple."""
-        return Note(
+        return cls(
             id_=note[0],
             created_at=note[1],
             category=note[2],
